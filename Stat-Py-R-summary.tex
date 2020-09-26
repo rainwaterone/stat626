@@ -10,6 +10,7 @@
 \usepackage{lscape}
 \usepackage{rotating}
 \usepackage{amsmath}
+\usepackage{caption}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -278,7 +279,7 @@ Assumptions of Linear Regression:
 
 \section{Time Series Analysis}
 \subsection{Introduction to Time Series}
-A \textit{univariate time series} is a sequence of measurements of one variable observed with respect to time. Typically, the observations (measurements) are made at regular intervals. One difference between a time series and a linear regression is that the data in a time series are not necessarily independent from one another---an observation in a time series may in fact be dependent upon the value at a previous point in time. Furthermore, the \textit{ordering} of the values are important---to re-order the values would significantly change the meaning fo the data.
+A \textit{univariate time series} is a sequence of measurements of one variable observed with respect to time. Typically, the observations (measurements) are made at regular intervals. One difference between a time series and a linear regression is that the data in a time series are not necessarily independent from one another---an observation in a time series may in fact be dependent upon the value at a previous point in time. Furthermore, the \textit{ordering} of the values are important---to re-order the values would significantly change the meaning of the data.
 
 Much of our attention will be focused upon models that relate the present value of the time series to a series of past values and past errors. These are termed \textit{Autoregressive Integrated Moving Average} (\textbf{ARIMA}) models.
 
@@ -295,9 +296,9 @@ When examining a time series, we consider the following:
 
 A time series, $Y_t$ is \textit{(weakly) stationary} if it has a mean, variance, and a correlation structure that are all constant with respect to time. In other words:
 \begin{enumerate}
-\item $E(Y_t) = \mu$ is constant for all $t$ (where $\mu$ represents the population mean);
-\item $Var(Y_t) = {\sigma}^2$ for all $t$; and,
-\item $Corr(Y_t, Y_{t-s}) = \rho(s)$ for all $s$ and for some function, $p$, which is termed the \textit{autocorrelation function}, ACF.
+\item $E(Y_t) = \mu$ is constant for all $t$ (where $\mu$ represents the population mean). Thus, the \textit{mean} is neither increasing or decreasing with time;
+\item $Var(Y_t) = {\sigma}^2$ for all $t$. Thus, the \textit{variance} is neither increasing nor decreasing with time; and,
+\item $Corr(Y_t, Y_{t-s}) = \rho(s)$ for all $s$ and for some function, $p$, which is termed the \textit{autocorrelation function}, ACF Thus, our \textit{correlation} is neither increasing nor decreasing with time.
 \end{enumerate}
 A time series is declared to be \textit{nonstationary} if any of the above three criteria are not true. For the sake of our current study, the word \textit{stationary} shall refer to a time series that is at least weakly stationary. Formally, there is a kind of time series model which is termed \textit{strictly stationary}; it is that for which all joint distributions are invariant to shifts in time. We will defer the study of \textit{strictly stationary} time series until later (if ever).
  
@@ -305,6 +306,7 @@ The correlation structure of a time series is studied by examining:
 \begin{itemize}
 \item Plots of $Y_t$ against $Y_{t-s}$, where $s$ represents a number of lags in the time series (\textit{e.g.}, $s = 1$ refers to the observation immediately prior to the one of interest; $s = 2$ refers to the 2nd observation prior to the one of interest, \textit{etc}. These plots are called \textit{lag plots}.
 \item The \textit{autocorrelation function} $\rho(s) = Corr(Y_t, Y_{t-s})$, where $s = 1, 2, \ldots$
+\item \textit{Probably some other stuff goes here.}
 \end{itemize}
 
 \subsubsection{The Random Walk}
@@ -325,11 +327,20 @@ Since $a_t$ is simply a \textit{white noise} value with a mean of zero, a consta
 
 \subsubsection{The AR(1) Model}
 A very simple ARIMA model is one in which a linear model is used to predict the value at a specific time using the value at the observation immediately preceding it. This is called an \textbf{AR(1)} model, which denotes an \textit{autoregressive model of order} \textbf{1}. The \textit{order} of the model refers to the \textit{lag}, which is number of time offsets between the predicted and the predictor data points. Since, in this particular example, the value of each point is modeled from the value of the point immediately preceding it, it is said to have a lag of 1.
+
+
 \begin{figure}
+\begin{minipage}{\textwidth}
 	\includegraphics[width=\textwidth, keepaspectratio]{TimeSeriesArima1.png}
-	\caption{A typical time series plot of earthquakes. No sheep bladders were utilised to prevent them.}
+	\caption[dafuq]{A typical time series plot of earthquakes. No sheep bladders were utilised to prevent them\footnote{Bedevere, Sir, \textit{J. of Medieval Physics}, AD 932}. The horizontal axis represents \textit{years} and the vertical axis represents the \textit{number of earthquakes} in each year.}
 	\label{fig:arima1}
+\end{minipage}
 \end{figure}
+
+
+	
+
+
 A typical time series plot is presented as Figure~\ref{fig:arima1}. From a brief examination, several characteristics of this time series are evident:
 \begin{itemize}
 \item There are no obvious outliers in the plot.
@@ -340,13 +351,20 @@ A typical time series plot is presented as Figure~\ref{fig:arima1}. From a brief
 
 \begin{figure}
 	\includegraphics[width=\textwidth, keepaspectratio]{TimeSeriesArima1-lagplot.png}
-	\caption{A typical time series plot.}
+	\caption[caption]{A \textit{Lag 1} plot of the time series depicted in Figure~\ref{fig:arima1}. The horizontal axis represents the \textit{number of earthquakes} for the $x_{t-1}$ time point; the vertical axis represents the \textit{number of earthquakes} for the $x_t$ time point. 
+\newline
+\newline
+\indent
+For a typical interpretation, consider $x_{t-1}=10$ (on the axis labeled \textit{lag1}. We can see that there were three instances where, in a year $(t-1)$ in which there were 10 earthquakes reported, there were also quakes in the following year $t$. In those three following years, there were 15, 16, and 23 earthquakes reported (as estimated by eyeballing the data).
+\newline
+\newline
+We can see that there is a moderate linear relationshp between the number of earthquakes in the year $t-1$ and the year $t$. Thus, we suspect that this is a \textit{first order autoregressive model}. }
 	\label{fig:arima1lag}
 \end{figure}
 
-To assess whether an AR(1) model is appropriate, we may generate a \textit{lag plot} as shown in Figure~\ref{fig:arima1lag}. Here, the values of the series, denoted $x_t$ are plotted against the values of $x_{t-2}$. Thus, for each point in the plot, the $y$-axis represents the value of $x_t$ at some time $t$, and the $x$-axis represents the value of $x_{t-1}$. In other words, it is a plot of the value of each point against the value of its immediate predecessor. Similarly, we could produce a lag plot of \textit{lag 2}, or any arbitrary number of lags (limited only by the number of data points available).
+To assess whether an AR(1) model is appropriate, we may generate a \textit{lag plot} as shown in Figure~\ref{fig:arima1lag}. Here, the values of the series, denoted $x_t$ are plotted against the values of $x_{t-1}$. Thus, for each point in the plot, the $y$-axis represents the value of $x_t$ at some time $t$, and the $x$-axis represents the value of $x_{t-1}$. In other words, it is a plot of the value of each point against the value of its immediate predecessor. Similarly, we could produce a lag plot of \textit{lag 2}, or any arbitrary number of lags (limited only by the number of data points available).
 
-Looking at Figure~\ref{fig:arima1lag}, we can see that there is a moderately strong linear relationship between a point and its lag. Thus, an AR(1) model may be useful.
+Looking at Figure~\ref{fig:arima1lag}, we can see that there is a moderately strong linear relationship between a point and its lag. Thus, an AR(1) model may be useful in modeling the time series.
 
 An AR(1) model is defined mathematically as:
 \begin{equation}
